@@ -1,6 +1,6 @@
 const net = require('net');
 
-const HOST = '127.0.0.1';
+const HOST = '0.0.0.0';
 const PORT = '8314';
 
 const logger = console;
