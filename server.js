@@ -20,6 +20,7 @@ fs.readFile(versionPath, (err, data) => {
         throw err;
     }else{
         versionData = data;
+        logger.log(data);
     }
 });
 
