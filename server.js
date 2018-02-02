@@ -13,14 +13,13 @@ server.listen(port, host, () => {
 });
 
 let versionData;
-const version = '2';
+const version = '3';
 const versionPath = path.join(__dirname, '../../__data__', version);
 fs.readFile(versionPath, (err, data) => {
     if(err){
         throw err;
     }else{
         versionData = data;
-        logger.log(data.toString('utf-8'));
     }
 });
 
