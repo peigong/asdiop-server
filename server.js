@@ -3,6 +3,11 @@ const fs = require('fs');
 const path = require('path');
 
 const { host, port } = require('./config.json');
+const STATE = {
+    INIT: 0,
+    RUNING: 1,
+    END: 2
+};
 
 const logger = console;
 const server = net.createServer();
@@ -12,14 +17,28 @@ server.listen(port, host, () => {
     logger.log(`Server listening on ${ address }:${ port }`);
 });
 
-let versionData;
-const version = '3';
+let packages = [];
+let total = 0;
+
+const version = '4';
+const LENGTH = 1024;
 const versionPath = path.join(__dirname, '../../__data__', version);
 fs.readFile(versionPath, (err, data) => {
     if(err){
-        throw err;
+        logger.error(err);
     }else{
-        versionData = data;
+        let buf = Buffer.from(data);
+        let bufLength = buf.length;
+        total = Math.ceil(bufLength / LENGTH);
+        for(let i = 0; i < total; i++){
+            let byteOffset = i * LENGTH;
+            let len = bufLength - byteOffset;
+            if(len > LENGTH){
+                len = LENGTH;
+            }else{
+            }
+            packages[i] = Buffer.from(buf, byteOffset, len);
+        }
     }
 });
 
@@ -33,12 +52,31 @@ server.on('connection', function(sock) {
         logger.log(`connect on ${ remoteAddress }:${ remotePort }`);
     });
     sock.on('data', (data) => {
+        data += '';
         logger.log(`data on ${ remoteAddress }:${ data }`);
-        var ver = data;
-        if(ver < version){
-            sock.write(versionData);
-        }else{
-            sock.write('0');
+        
+        if(data){
+            let flag = 0;
+            let state = data[0] * 1;
+            if(data.length > 1){
+                flag = data.substring(1);
+            }
+            switch(state){
+                case STATE.INIT:
+                    if(flag < version){
+                        sock.write(packages.length);
+                    }else{
+                        sock.write(0);
+                    }
+                    break;
+                case STATE.RUNING:
+                    flag *= 1;
+                    if(!isNaN(flag)){
+                        sock.write(packages[flag]);
+                    }
+                    break;
+                default:
+            }
         }
     });
     sock.on('drain', (data) => {
@@ -54,9 +92,11 @@ server.on('connection', function(sock) {
         logger.log(`timeout on ${ remoteAddress }:${ remotePort }`);
     });
     sock.on('error', (err) => {
+        err.message = ['sock', err.message].join(':');
         logger.error(err);
     });
 });
 server.on('error', (err) => {
+    err.message = ['server', err.message].join(':');
     logger.error(err);
 });
