@@ -37,6 +37,7 @@ client.on('data', (data) => {
             total--;
             counter ++;
             packages.push(data);
+            logger.log(`接收第${ counter }个包`);
             if(total){
                 client.write(`${ state }${ counter }`);
             }else{ // 接收完毕
