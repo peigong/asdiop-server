@@ -35,9 +35,12 @@ fs.readFile(versionPath, (err, data) => {
             let len = bufLength - byteOffset;
             if(len > LENGTH){
                 len = LENGTH;
+                let b = Buffer.from(buf, byteOffset, len);
+                packages[i] = b;
             }else{
+                let b = Buffer.from(buf, byteOffset, len);
+                packages[i] = Buffer.concat(b, Buffer.alloc(LENGTH - len));
             }
-            packages[i] = Buffer.from(buf, byteOffset, len);
         }
     }
 });
@@ -57,22 +60,29 @@ server.on('connection', function(sock) {
         
         if(data){
             let flag = 0;
-            let state = data[0] * 1;
-            if(data.length > 1){
-                flag = data.substring(1);
+            let state = STATE.INIT;
+            if(data != 'v'){
+                state = STATE.RUNING;
+                flag = data * 1;
             }
             switch(state){
                 case STATE.INIT:
                     if(flag < version){
-                        sock.write(packages.length);
+                        sock.write(packages.length + '');
                     }else{
-                        sock.write(0);
+                        sock.write('0');
                     }
                     break;
                 case STATE.RUNING:
                     flag *= 1;
                     if(!isNaN(flag)){
-                        sock.write(packages[flag]);
+                        let b = packages[flag];
+                        if(Buffer.isBuffer(b)){
+                            sock.write(b);
+                        }else{
+                            logger.log(`package ${ flag } is not  buffer`);
+                            sock.write(Buffer.alloc(0));
+                        }
                     }
                     break;
                 default:

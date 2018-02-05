@@ -21,7 +21,8 @@ let packages = [];
 
 client.connect(port, host, () => {
     logger.log(`connected to: ${ host }:${ port }`);
-    client.write(`${ state }${ version }`);
+    // client.write(`${ state }${ version }`);
+    client.write('v');
 });
 
 client.on('data', (data) => {
@@ -30,21 +31,27 @@ client.on('data', (data) => {
             total = data * 1;
             if(total > 0){ // 分包数大于0
                 state = STATE.RUNING;
-                client.write(`${ state }`);
+                // client.write(`${ state }`);
+                client.write(`${ counter }`);
             }
             break;
         case STATE.RUNING:
             total--;
             counter ++;
-            packages.push(data);
-            logger.log(`接收第${ counter }个包`);
+            if(Buffer.isBuffer(data)){
+                packages.push(data);
+                logger.log(`${ counter }`);
+            }else{
+                logger.log(`${ counter } is not buffer.`);
+            }
             if(total){
-                client.write(`${ state }${ counter }`);
+                // client.write(`${ state }${ counter }`);
+                client.write(`${ counter }`);
             }else{ // 接收完毕
                 state = STATE.END;
                 let buf = Buffer.concat(packages, packages.length * 1024);
                 let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getTime() + '.jpg');
-                fs.writeFile(filePath, buf, (err){
+                fs.writeFile(filePath, buf, (err) => {
                     if(err){
                         logger.error(err);
                     }
