@@ -40,7 +40,7 @@ client.on('data', (data) => {
             counter ++;
             if(Buffer.isBuffer(data)){
                 packages.push(data);
-                logger.log(`${ counter }`);
+                // logger.log(`${ counter }`);
             }else{
                 logger.log(`${ counter } is not buffer.`);
             }

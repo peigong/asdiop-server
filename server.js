@@ -39,7 +39,7 @@ fs.readFile(versionPath, (err, data) => {
                 packages[i] = b;
             }else{
                 let b = Buffer.from(buf, byteOffset, len);
-                packages[i] = Buffer.concat(b, Buffer.alloc(LENGTH - len));
+                packages[i] = Buffer.concat([b, Buffer.alloc(LENGTH - len)]);
             }
         }
     }
@@ -56,7 +56,7 @@ server.on('connection', function(sock) {
     });
     sock.on('data', (data) => {
         data += '';
-        logger.log(`data on ${ remoteAddress }:${ data }`);
+        // logger.log(`data on ${ remoteAddress }:${ data }`);
         
         if(data){
             let flag = 0;
@@ -75,7 +75,7 @@ server.on('connection', function(sock) {
                     break;
                 case STATE.RUNING:
                     flag *= 1;
-                    if(!isNaN(flag)){
+                    if(flag < total){
                         let b = packages[flag];
                         if(Buffer.isBuffer(b)){
                             sock.write(b);
