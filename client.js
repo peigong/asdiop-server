@@ -43,8 +43,12 @@ client.on('data', (data) => {
                 state = STATE.END;
                 let buf = Buffer.concat(packages, packages.length * 1024);
                 let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getTime() + '.jpg');
-                fs.writeFile(filePath, buf);
-                client.destroy();
+                fs.writeFile(filePath, buf, (err){
+                    if(err){
+                        logger.error(err);
+                    }
+                    client.destroy();
+                });
             }
             break;
         default:
