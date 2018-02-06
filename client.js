@@ -40,7 +40,8 @@ client.on('data', (data) => {
             counter++;
             logger.log(`${ counter }`);
             if(Buffer.isBuffer(data)){
-                fs.appendFile(filePath, data, (err) => {
+                let write = (1 === counter) ? fs.writeFile : fs.appendFile;
+                write(filePath, data, (err) => {
                     if(err){
                         logger.error(err);
                     }
