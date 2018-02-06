@@ -37,7 +37,6 @@ client.on('data', (data) => {
             }
             break;
         case STATE.RUNING:
-            total--;
             counter++;
             logger.log(`${ counter }`);
             if(Buffer.isBuffer(data)){
@@ -47,7 +46,7 @@ client.on('data', (data) => {
                     }
                 });
             }
-            if(total){
+            if(counter < total){
                 // client.write(`${ state }${ counter }`);
                 client.write(`${ counter }`);
             }else{ // 接收完毕
