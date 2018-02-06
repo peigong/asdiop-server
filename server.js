@@ -44,9 +44,9 @@ fs.readFile(versionPath, (err, data) => {
                 bufArr.push(tail);
             }
             packages.push(Buffer.concat(bufArr));
-            logger.log(`split:${ i }`);
+            logger.log(`split package:${ i }`);
         }
-        logger.log(`package count:${ total }`);
+        logger.log(`package total:${ total }`);
     }
 });
 
@@ -61,7 +61,7 @@ server.on('connection', function(sock) {
     });
     sock.on('data', (data) => {
         data = data.toString();
-        logger.log(`data on ${ remoteAddress }:${ data }`);
+        // logger.log(`data on ${ remoteAddress }:${ data }`);
         if(data){
             let flag = 0;
             let state = STATE.INIT;
