@@ -60,36 +60,35 @@ server.on('connection', function(sock) {
         logger.log(`connect on ${ remoteAddress }:${ remotePort }`);
     });
     sock.on('data', (data) => {
-        data = data.toString();
+        let flag = 0;
+        let state = STATE.INIT;
+        let bufData = Buffer.from(data);
+        let v = bufData.toString('utf-8');
         // logger.log(`data on ${ remoteAddress }:${ data }`);
-        if(data){
-            let flag = 0;
-            let state = STATE.INIT;
-            if(data != 'v'){
-                state = STATE.RUNING;
-                flag = data * 1;
-            }
-            switch(state){
-                case STATE.INIT:
-                    let ver = version * 1;
-                    if(flag < ver){
-                        sock.write(packages.length + '');
-                    }else{
-                        sock.write('0');
+        if(v !== 'v'){
+            state = STATE.RUNING;
+            flag = bufData.readUInt32BE();
+        }
+        switch(state){
+            case STATE.INIT:
+                let ver = version * 1;
+                let buf = Buffer.alloc(4); // 默认为0
+                if(flag < ver){
+                    buf.writeUInt32BE(packages.length);
+                }
+                sock.write(buf);
+                break;
+            case STATE.RUNING:
+                if(flag < total){
+                    let b = packages[flag];
+                    if(Buffer.isBuffer(b)){
+                        sock.write(b);
                     }
-                    break;
-                case STATE.RUNING:
-                    if(flag < total){
-                        let b = packages[flag];
-                        if(Buffer.isBuffer(b)){
-                            sock.write(b);
-                        }
-                    }else{
-                        logger.log(['package exception', flag].join(':'));
-                    }
-                    break;
-                default:
-            }
+                }else{
+                    logger.log(['package exception', flag].join(':'));
+                }
+                break;
+            default:
         }
     });
     sock.on('drain', (data) => {

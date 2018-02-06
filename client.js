@@ -21,35 +21,36 @@ let state = STATE.INIT;
 client.connect(port, '127.0.0.1', () => {
     logger.log(`connected to: ${ host }:${ port }`);
     // client.write(`${ state }${ version }`);
-    client.write('v');
+    let buf = Buffer.from('v');
+    client.write(buf);
 });
 
 client.on('data', (data) => {
+    let bufData = Buffer.from(data);
     let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getHours () + '.jpg');
     switch(state){
         case STATE.INIT:
-            total = data.toString() * 1;
+            total = bufData.readUInt32BE();
             logger.log(`package count:${ total }`);
             if(total > 0){ // 分包数大于0
                 state = STATE.RUNING;
-                // client.write(`${ state }`);
-                client.write(`${ counter }`);
+                let buf = Buffer.alloc(4); // 默认为0
+                client.write(buf);
             }
             break;
         case STATE.RUNING:
             counter++;
             logger.log(`${ counter }`);
-            if(Buffer.isBuffer(data)){
-                let write = (1 === counter) ? fs.writeFile : fs.appendFile;
-                write(filePath, data, (err) => {
-                    if(err){
-                        logger.error(err);
-                    }
-                });
-            }
+            let write = (1 === counter) ? fs.writeFile : fs.appendFile;
+            write(filePath, bufData, (err) => {
+                if(err){
+                    logger.error(err);
+                }
+            });
             if(counter < total){
-                // client.write(`${ state }${ counter }`);
-                client.write(`${ counter }`);
+                let buf = Buffer.alloc(4); // 默认为0
+                buf.writeUInt32BE(counter);
+                client.write(buf);
             }else{ // 接收完毕
                 state = STATE.END;
                 client.end();
