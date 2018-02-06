@@ -28,17 +28,17 @@ client.on('data', (data) => {
     let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getHours () + '.jpg');
     switch(state){
         case STATE.INIT:
-            total = data * 1;
+            total = data.toString() * 1;
+            logger.log(`包数：${ total }`);
             if(total > 0){ // 分包数大于0
                 state = STATE.RUNING;
                 // client.write(`${ state }`);
                 client.write(`${ counter }`);
-                logger.log(`包数：${ total }`);
             }
             break;
         case STATE.RUNING:
-            total--;
-            counter ++;
+            total = total * 1 - 1;
+            counter = counter * 1 + 1;
             if(Buffer.isBuffer(data)){
                 fs.appendFile(filePath, data, (err) => {
                     logger.log(`${ counter }`);

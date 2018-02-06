@@ -46,6 +46,8 @@ fs.readFile(versionPath, (err, data) => {
             let b = Buffer.concat(bufArr);
             if(Buffer.isBuffer(b)){
                 packages.push(b);
+            }else{
+                logger.log(`${ i } is not buffer`);
             }
         }
     }
@@ -61,9 +63,8 @@ server.on('connection', function(sock) {
         logger.log(`connect on ${ remoteAddress }:${ remotePort }`);
     });
     sock.on('data', (data) => {
-        data += '';
-        // logger.log(`data on ${ remoteAddress }:${ data }`);
-        
+        data = data.toString();
+        logger.log(`data on ${ remoteAddress }:${ data }`);
         if(data){
             let flag = 0;
             let state = STATE.INIT;
@@ -71,16 +72,17 @@ server.on('connection', function(sock) {
                 state = STATE.RUNING;
                 flag = data * 1;
             }
+            flag *= 1;
             switch(state){
                 case STATE.INIT:
-                    if(flag < version){
+                    let ver = version * 1;
+                    if(flag < ver){
                         sock.write(packages.length + '');
                     }else{
                         sock.write('0');
                     }
                     break;
                 case STATE.RUNING:
-                    flag *= 1;
                     if(flag < total){
                         let b = packages[flag];
                         if(Buffer.isBuffer(b)){
