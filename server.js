@@ -43,7 +43,10 @@ fs.readFile(versionPath, (err, data) => {
             if(tail){
                 bufArr.push(tail);
             }
-            packages[i] = Buffer.concat(bufArr);
+            let b = Buffer.concat(bufArr);
+            if(Buffer.isBuffer(b)){
+                packages.push(b);
+            }
         }
     }
 });
@@ -84,7 +87,6 @@ server.on('connection', function(sock) {
                             sock.write(b);
                         }else{
                             logger.log(`package ${ flag } is not  buffer`);
-                            sock.write(Buffer.alloc(0));
                         }
                     }
                     break;

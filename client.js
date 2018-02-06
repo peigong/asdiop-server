@@ -33,6 +33,7 @@ client.on('data', (data) => {
                 state = STATE.RUNING;
                 // client.write(`${ state }`);
                 client.write(`${ counter }`);
+                logger.log(`包数：${ total }`);
             }
             break;
         case STATE.RUNING:
@@ -40,6 +41,7 @@ client.on('data', (data) => {
             counter ++;
             if(Buffer.isBuffer(data)){
                 fs.appendFile(filePath, data, (err) => {
+                    logger.log(`${ counter }`);
                     if(err){
                         logger.error(err);
                     }else{
@@ -53,7 +55,6 @@ client.on('data', (data) => {
                         }
                     }
                 });
-                // logger.log(`${ counter }`);
             }else{
                 logger.log(`${ counter } is not buffer.`);
             }
