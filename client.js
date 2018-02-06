@@ -41,14 +41,10 @@ client.on('data', (data) => {
         case STATE.RUNING:
             counter++;
             logger.log(`${ counter }`);
-            let write = (1 === counter) ? fs.writeFile : fs.appendFile;
-            write(filePath, bufData, (err) => {
-                if(err){
-                    logger.error(err);
-                }
-            });
+            let write = (1 === counter) ? fs.writeFileSync : fs.appendFileSync;
+            write(filePath, bufData);
             if(counter < total){
-                let buf = Buffer.alloc(4); // 默认为0
+                let buf = Buffer.alloc(4);
                 buf.writeUInt32BE(counter);
                 client.write(buf);
             }else{ // 接收完毕
