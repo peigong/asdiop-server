@@ -31,16 +31,19 @@ fs.readFile(versionPath, (err, data) => {
         let bufLength = buf.length;
         total = Math.ceil(bufLength / LENGTH);
         for(let i = 0; i < total; i++){
+            let tail = null;
             let byteOffset = i * LENGTH;
             let len = bufLength - byteOffset;
             if(len > LENGTH){
                 len = LENGTH;
-                let b = Buffer.from(buf, byteOffset, len);
-                packages[i] = b;
             }else{
-                let b = Buffer.from(buf, byteOffset, len);
-                packages[i] = Buffer.concat([b, Buffer.alloc(LENGTH - len)]);
+                tail = Buffer.alloc(LENGTH - len);
             }
+            let bufArr = [Buffer.from(buf, byteOffset, len)];
+            if(tail){
+                bufArr.push(tail);
+            }
+            packages[i] = Buffer.concat(bufArr);
         }
     }
 });

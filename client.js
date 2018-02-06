@@ -17,15 +17,15 @@ const STATE = {
 let total = 0;
 let counter = 0;
 let state = STATE.INIT;
-let packages = [];
 
-client.connect(port, host, () => {
+client.connect(port, '127.0.0.1', () => {
     logger.log(`connected to: ${ host }:${ port }`);
     // client.write(`${ state }${ version }`);
     client.write('v');
 });
 
 client.on('data', (data) => {
+    let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getHours () + '.jpg');
     switch(state){
         case STATE.INIT:
             total = data * 1;
@@ -39,24 +39,23 @@ client.on('data', (data) => {
             total--;
             counter ++;
             if(Buffer.isBuffer(data)){
-                packages.push(data);
+                fs.appendFile(filePath, data, (err) => {
+                    if(err){
+                        logger.error(err);
+                    }else{
+                        if(total){
+                            // client.write(`${ state }${ counter }`);
+                            client.write(`${ counter }`);
+                        }else{ // 接收完毕
+                            state = STATE.END;
+                            client.end();
+                            client.destroy();
+                        }
+                    }
+                });
                 // logger.log(`${ counter }`);
             }else{
                 logger.log(`${ counter } is not buffer.`);
-            }
-            if(total){
-                // client.write(`${ state }${ counter }`);
-                client.write(`${ counter }`);
-            }else{ // 接收完毕
-                state = STATE.END;
-                let buf = Buffer.concat(packages, packages.length * 1024);
-                let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getTime() + '.jpg');
-                fs.writeFile(filePath, buf, (err) => {
-                    if(err){
-                        logger.error(err);
-                    }
-                    client.destroy();
-                });
             }
             break;
         default:
