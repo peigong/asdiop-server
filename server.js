@@ -44,7 +44,7 @@ fs.readFile(versionPath, (err, data) => {
                 bufArr.push(tail);
             }
             packages.push(Buffer.concat(bufArr));
-            logger.log(`split package:${ i }`);
+            logger.log(`package index:${ i }`);
         }
         logger.log(`package total:${ total }`);
     }
@@ -85,7 +85,7 @@ server.on('connection', function(sock) {
                             sock.write(b);
                         }
                     }else{
-                        logger.log(`package exception:${ flag }`);
+                        logger.log(['package exception', flag].join(':'));
                     }
                     break;
                 default:
