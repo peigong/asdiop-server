@@ -49,8 +49,6 @@ client.on('data', (data) => {
                 client.write(buf);
             }else{ // 接收完毕
                 state = STATE.END;
-                client.end();
-                client.destroy();
             }
             break;
         default:
@@ -59,4 +57,5 @@ client.on('data', (data) => {
 
 client.on('close', (data) => {
     logger.log('client closed.');
+    client.destroy();
 });
