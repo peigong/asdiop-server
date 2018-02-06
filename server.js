@@ -43,13 +43,10 @@ fs.readFile(versionPath, (err, data) => {
             if(tail){
                 bufArr.push(tail);
             }
-            let b = Buffer.concat(bufArr);
-            if(Buffer.isBuffer(b)){
-                packages.push(b);
-            }else{
-                logger.log(`${ i } is not buffer`);
-            }
+            packages.push(Buffer.concat(bufArr));
+            logger.log(`split:${ i }`);
         }
+        logger.log(`package count:${ total }`);
     }
 });
 
@@ -72,7 +69,6 @@ server.on('connection', function(sock) {
                 state = STATE.RUNING;
                 flag = data * 1;
             }
-            flag *= 1;
             switch(state){
                 case STATE.INIT:
                     let ver = version * 1;
@@ -87,9 +83,9 @@ server.on('connection', function(sock) {
                         let b = packages[flag];
                         if(Buffer.isBuffer(b)){
                             sock.write(b);
-                        }else{
-                            logger.log(`package ${ flag } is not  buffer`);
                         }
+                    }else{
+                        logger.log(`package exception:${ flag }`);
                     }
                     break;
                 default:

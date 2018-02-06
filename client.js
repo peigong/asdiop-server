@@ -29,7 +29,7 @@ client.on('data', (data) => {
     switch(state){
         case STATE.INIT:
             total = data.toString() * 1;
-            logger.log(`包数：${ total }`);
+            logger.log(`package count:${ total }`);
             if(total > 0){ // 分包数大于0
                 state = STATE.RUNING;
                 // client.write(`${ state }`);
@@ -37,26 +37,23 @@ client.on('data', (data) => {
             }
             break;
         case STATE.RUNING:
-            total = total * 1 - 1;
-            counter = counter * 1 + 1;
+            total--;
+            counter++;
+            logger.log(`${ counter }`);
             if(Buffer.isBuffer(data)){
                 fs.appendFile(filePath, data, (err) => {
-                    logger.log(`${ counter }`);
                     if(err){
                         logger.error(err);
-                    }else{
-                        if(total){
-                            // client.write(`${ state }${ counter }`);
-                            client.write(`${ counter }`);
-                        }else{ // 接收完毕
-                            state = STATE.END;
-                            client.end();
-                            client.destroy();
-                        }
                     }
                 });
-            }else{
-                logger.log(`${ counter } is not buffer.`);
+            }
+            if(total){
+                // client.write(`${ state }${ counter }`);
+                client.write(`${ counter }`);
+            }else{ // 接收完毕
+                state = STATE.END;
+                client.end();
+                client.destroy();
             }
             break;
         default:
