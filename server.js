@@ -67,14 +67,14 @@ server.on('connection', function(sock) {
         // logger.log(`data on ${ remoteAddress }:${ data }`);
         if(v !== 'v'){
             state = STATE.RUNING;
-            flag = bufData.readUInt32BE();
+            flag = bufData.readUInt32LE();
         }
         switch(state){
             case STATE.INIT:
                 let ver = version * 1;
                 let buf = Buffer.alloc(4); // 默认为0
                 if(flag < ver){
-                    buf.writeUInt32BE(packages.length);
+                    buf.writeUInt32LE(packages.length);
                 }
                 sock.write(buf);
                 break;

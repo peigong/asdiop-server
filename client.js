@@ -30,7 +30,7 @@ client.on('data', (data) => {
     let filePath = path.join(__dirname, '../../__tmp__', (new Date()).getHours () + '.jpg');
     switch(state){
         case STATE.INIT:
-            total = bufData.readUInt32BE();
+            total = bufData.readUInt32LE();
             logger.log(`package count:${ total }`);
             if(total > 0){ // 分包数大于0
                 state = STATE.RUNING;
@@ -49,7 +49,7 @@ client.on('data', (data) => {
             }
             if(counter < total){
                 let buf = Buffer.alloc(4);
-                buf.writeUInt32BE(counter);
+                buf.writeUInt32LE(counter);
                 client.write(buf);
             }else{ // 接收完毕
                 state = STATE.END;
