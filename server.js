@@ -116,8 +116,8 @@ server.on('connection', function(socket) {
         logger.log(`timeout on ${ remoteAddress }:${ remotePort }`);
     });
     socket.on('error', (err) => {
-        err.message = ['socket', err.message].join(':');
-        logger.error(err);
+        // err.message = ['socket', err.message].join(':');
+        // logger.error(err);
     });
 });
 server.on('error', (err) => {
