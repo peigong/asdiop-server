@@ -10,7 +10,10 @@ const STATE = {
 };
 
 const logger = console;
-const server = net.createServer();
+const server = net.createServer({
+    // 允许一个半开的TCP连接
+    allowHalfOpen: true
+});
 
 server.listen(port, host, () => {
     const { address, port } = server.address();
