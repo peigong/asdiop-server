@@ -50,16 +50,16 @@ fs.readFile(versionPath, (err, data) => {
     }
 });
 
-server.on('connection', function(sock) {
-    const remoteAddress = sock.remoteAddress;
-    const remotePort = sock.remotePort;
+server.on('connection', function(socket) {
+    const remoteAddress = socket.remoteAddress;
+    const remotePort = socket.remotePort;
 
     logger.log(`connected on ${ remoteAddress }:${ remotePort }`);
 
-    sock.on('connect', (data) => {
+    socket.on('connect', (data) => {
         logger.log(`connect on ${ remoteAddress }:${ remotePort }`);
     });
-    sock.on('data', (data) => {
+    socket.on('data', (data) => {
         socket.pause(); // 暂停接收data事件
 
         let flag = 0;
@@ -78,7 +78,7 @@ server.on('connection', function(sock) {
                 if(flag < ver){
                     buf.writeUInt32LE(packages.length);
                 }
-                sock.write(buf, (err) => {
+                socket.write(buf, (err) => {
                     if(err){
                         logger.error(err);
                     }
@@ -89,7 +89,7 @@ server.on('connection', function(sock) {
                 if(flag < total){
                     let b = packages[flag];
                     if(Buffer.isBuffer(b)){
-                        sock.write(b, (err) => {
+                        socket.write(b, (err) => {
                             if(err){
                                 logger.error(err);
                             }
@@ -103,21 +103,21 @@ server.on('connection', function(sock) {
             default:
         }
     });
-    sock.on('drain', (data) => {
+    socket.on('drain', (data) => {
         logger.log(`drain on ${ remoteAddress }:${ remotePort }`);
     });
-    sock.on('end', (data) => {
+    socket.on('end', (data) => {
         logger.log(`end on ${ remoteAddress }:${ remotePort }`);
     });
-    sock.on('close', (data) => {
+    socket.on('close', (data) => {
         logger.log(`closed on ${ remoteAddress }:${ remotePort }`);
     });
-    sock.on('timeout', (data) => {
+    socket.on('timeout', (data) => {
         logger.log(`timeout on ${ remoteAddress }:${ remotePort }`);
     });
-    sock.on('error', (err) => {
-        // err.message = ['sock', err.message].join(':');
-        // logger.error(err);
+    socket.on('error', (err) => {
+        err.message = ['socket', err.message].join(':');
+        logger.error(err);
     });
 });
 server.on('error', (err) => {
