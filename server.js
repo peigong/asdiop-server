@@ -60,6 +60,8 @@ server.on('connection', function(sock) {
         logger.log(`connect on ${ remoteAddress }:${ remotePort }`);
     });
     sock.on('data', (data) => {
+        socket.pause(); // 暂停接收data事件
+
         let flag = 0;
         let state = STATE.INIT;
         let bufData = Buffer.from(data);
@@ -76,13 +78,23 @@ server.on('connection', function(sock) {
                 if(flag < ver){
                     buf.writeUInt32LE(packages.length);
                 }
-                sock.write(buf);
+                sock.write(buf, (err) => {
+                    if(err){
+                        logger.error(err);
+                    }
+                    socket.resume(); // 恢复接收data事件
+                });
                 break;
             case STATE.RUNING:
                 if(flag < total){
                     let b = packages[flag];
                     if(Buffer.isBuffer(b)){
-                        sock.write(b);
+                        sock.write(b, (err) => {
+                            if(err){
+                                logger.error(err);
+                            }
+                            socket.resume(); // 恢复接收data事件
+                        });
                     }
                 }else{
                     logger.log(['package exception', flag].join(':'));
