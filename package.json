@@ -1,0 +1,30 @@
+{
+  "name": "asdiop-server",
+  "version": "1.0.0",
+  "description": "asdiop web & socket服务端",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peigong/asdiop-server.git"
+  },
+  "keywords": [
+    "web",
+    "socket"
+  ],
+  "author": "周培公 <peigong@foxmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peigong/asdiop-server/issues"
+  },
+  "homepage": "https://github.com/peigong/asdiop-server#readme",
+  "dependencies": {
+    "install": "^0.10.4",
+    "koa": "^2.5.0",
+    "koa-static": "^4.0.2",
+    "npm": "^5.7.1"
+  }
+}
