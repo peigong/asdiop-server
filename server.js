@@ -47,7 +47,7 @@ server.on('connection', function(socket) {
         // logger.log(`data on ${ remoteAddress }:${ data }`);
         if(v !== 'v'){
             state = STATE.RUNING;
-            flag = bufData.readUInt32LE();
+            // flag = bufData.readUInt32LE();
         }
         switch(state){
             case STATE.INIT:
