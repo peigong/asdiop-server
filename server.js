@@ -1,8 +1,9 @@
 const net = require('net');
 const path = require('path');
 
-const data = require('./lib/byte-data.js');
+// const data = require('./lib/byte-data.js');
 // const data = require('./lib/text-data.js');
+const data = require('./lib/buffer-data.js');
 const { host, port } = require('./config.json');
 
 const STATE = {
