@@ -2,8 +2,8 @@ const net = require('net');
 const path = require('path');
 
 // const data = require('./lib/text-data.js');
-// const data = require('./lib/buffer-data.js');
-const data = require('./lib/file-data.js');
+const data = require('./lib/buffer-data.js');
+// const data = require('./lib/file-data.js');
 const { host, port } = require('./config.json');
 
 const STATE = {
@@ -47,7 +47,7 @@ server.on('connection', function(socket) {
         // logger.log(`data on ${ remoteAddress }:${ data }`);
         if(v !== 'v'){
             state = STATE.RUNING;
-            // flag = bufData.readUInt32LE();
+            flag = bufData.readUInt32LE();
         }
         switch(state){
             case STATE.INIT:
@@ -64,24 +64,24 @@ server.on('connection', function(socket) {
                 });
                 break;
             case STATE.RUNING:
-                socket.write(packages, (err) => {
-                    if(err){
-                        logger.error(err);
-                    }
-                });
-                // if(flag < total){
-                //     let b = packages[flag];
-                //     if(Buffer.isBuffer(b)){
-                //         socket.write(b, (err) => {
-                //             if(err){
-                //                 logger.error(err);
-                //             }
-                //             socket.resume(); // 恢复接收data事件
-                //         });
+                // socket.write(packages, (err) => {
+                //     if(err){
+                //         logger.error(err);
                 //     }
-                // }else{
-                //     logger.log(['package exception', flag].join(':'));
-                // }
+                // });
+                if(flag < total){
+                    let b = packages[flag];
+                    if(Buffer.isBuffer(b)){
+                        socket.write(b, (err) => {
+                            if(err){
+                                logger.error(err);
+                            }
+                            socket.resume(); // 恢复接收data事件
+                        });
+                    }
+                }else{
+                    logger.log(['package exception', flag].join(':'));
+                }
                 break;
             default:
         }
