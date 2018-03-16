@@ -9,7 +9,8 @@ const { host, port } = require('./config.json');
 const STATE = {
     INIT: 0,
     RUNING: 1,
-    END: 2
+    TAIL: 2,
+    END: 3
 };
 
 const logger = console;
@@ -26,7 +27,7 @@ server.listen(port, host, () => {
 const version = '4';
 const versionPath = path.join(__dirname, '../../__data__', version);
 
-let { packages, total } = data.init(versionPath);
+let { packages, total, tail } = data.init(versionPath);
 
 server.on('connection', function(socket) {
     const remoteAddress = socket.remoteAddress;
@@ -43,19 +44,35 @@ server.on('connection', function(socket) {
         let flag = 0;
         let state = STATE.INIT;
         let bufData = Buffer.from(data);
-        let v = bufData.toString('utf-8');
+        let message = bufData.toString('utf-8');
         // logger.log(`data on ${ remoteAddress }:${ data }`);
-        if(v !== 'v'){
-            state = STATE.RUNING;
-            flag = bufData.readUInt32LE();
+        switch(message){
+            case 'v':
+                state = STATE.INIT;
+                break;
+            case 'm':
+                state = STATE.TAIL;
+                break;
+            default:
+                state = STATE.RUNING;
+                flag = bufData.readUInt32LE();
         }
+        let buf = Buffer.allocUnsafeSlow(4).fill(0); // 默认为0
         switch(state){
             case STATE.INIT:
                 let ver = version * 1;
-                let buf = Buffer.alloc(4); // 默认为0
                 if(flag < ver){
                     buf.writeUInt32LE(packages.length);
                 }
+                socket.write(buf, (err) => {
+                    if(err){
+                        logger.error(err);
+                    }
+                    socket.resume(); // 恢复接收data事件
+                });
+                break;
+            case STATE.TAIL:
+                buf.writeUInt32LE(tail);
                 socket.write(buf, (err) => {
                     if(err){
                         logger.error(err);
