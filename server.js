@@ -44,7 +44,7 @@ server.on('connection', function(socket) {
         let type = Buffer.from(bufData, 0, LENGTH).toString('utf-8');
         let message =  Buffer.from(bufData, LENGTH);
         logger.log(`type: ${ type } length: ${ type.length }`);
-        type = type.substr(0, LENGTH);
+        type = type.substr(0, LENGTH - 1);
         logger.log(`type: ${ type } length: ${ type.length }`);
         if(parsers.hasOwnProperty(type)){
             parsers[type](message).then(send).catch(logger.log);
