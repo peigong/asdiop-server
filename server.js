@@ -43,10 +43,11 @@ server.on('connection', function(socket) {
 
         let type = Buffer.from(bufData, 0, LENGTH).toString('utf-8');
         let message =  Buffer.from(bufData, LENGTH);
+        logger.log(`type: ${ type }`);
         if(parsers.hasOwnProperty(type)){
             parsers[type](message).then(send).catch(logger.log);
         }else{
-            send(1); // 没有定义解析器的异常
+            send(10000); // 没有定义解析器的异常
         }
     });
     socket.on('drain', (data) => {
