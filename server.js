@@ -38,7 +38,7 @@ server.on('connection', function(socket) {
             });
         }
 
-        const LENGTH = 16;
+        const LENGTH = 12;
         let bufData = Buffer.from(data);
 
         let type = Buffer.from(bufData, 0, LENGTH).toString('utf-8');
