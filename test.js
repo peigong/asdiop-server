@@ -6,3 +6,4 @@ buf.writeUInt32BE(3130);
 // let buf = Buffer.from('v');
 // let n = buf.readUInt32BE();
 console.log(buf.toString('utf-8'));
+console.log(Buffer.from('abcdeabcde').length);
