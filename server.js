@@ -38,11 +38,10 @@ server.on('connection', function(socket) {
             });
         }
 
-        const LENGTH = 10;
+        const LENGTH = 16;
         let bufData = Buffer.from(data);
 
-        // let type = Buffer.from(bufData, 0, LENGTH).toString('utf-8');
-        let type = Buffer.from(bufData, 0, LENGTH).toString('ascii');
+        let type = Buffer.from(bufData, 0, LENGTH).toString('utf-8');
         let message =  Buffer.from(bufData, LENGTH);
         logger.log(`type: ${ type } length: ${ type.length }`);
         type = type.substr(0, LENGTH);

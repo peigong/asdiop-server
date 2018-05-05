@@ -1,5 +1,5 @@
-const checkVersi = require('./check-version.js');
+const checkVersion = require('./check-version.js');
 
 module.exports = {
-    checkVersi
+    checkVersionaaaa: checkVersion
 };
