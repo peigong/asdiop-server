@@ -27,7 +27,8 @@ server.on('connection', function(socket) {
         // socket.pause(); // 暂停接收data事件
         let buf = Buffer.allocUnsafe(8); // 默认为0
         let now = Date.now();
-        buf.writeUIntLE(now, 0, 8);
+        let seconds = Math.floor(now / 1e3);
+        buf.writeUIntLE(seconds, 0, 8);
         // buf.writeUIntLE(1531889030648, 0, 8);
         socket.write(buf, (err) => {
             if(err){
