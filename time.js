@@ -1,6 +1,8 @@
 const net = require('net');
 const path = require('path');
 
+const { host, port } = require('./config.json');
+
 const logger = console;
 const server = net.createServer({
     // 允许一个半开的TCP连接
