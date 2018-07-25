@@ -27,32 +27,27 @@ let timer = setInterval(() => {
     }
 }, 5e3);
 
-function save(userId, date){
+function save(userId, checked){
     if(!json){
         json = {};
     }
-    json[userId] = date;
+    json[userId] = checked;
     flag = true;
 }
 
 function getUser(userId){
-    return json[userId] || 0;
+    if(!json){
+        json = {};
+    }
+    return json[`${ userId }`] || 0;
 }
 
 function getUsers(){
     return json || {};
 }
 
-function getDate(userId){
-    if(!json){
-        json = {};
-    }
-    return json[userId] || '';
-}
-
 module.exports = {
     save,
     getUser,
-    getUsers,
-    getDate
+    getUsers
 };
