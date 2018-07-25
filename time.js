@@ -2,6 +2,7 @@ const net = require('net');
 const path = require('path');
 
 const { host, port } = require('./config.json');
+const user = require('./db/user.js');
 
 const logger = console;
 const server = net.createServer({
@@ -25,11 +26,18 @@ server.on('connection', function(socket) {
     });
     socket.on('data', (data) => {
         // socket.pause(); // 暂停接收data事件
-        let buf = Buffer.allocUnsafe(8); // 默认为0
-        let now = Date.now();
-        let seconds = Math.floor(now / 1e3);
-        buf.writeUIntLE(seconds, 0, 8);
+        // let buf = Buffer.allocUnsafe(8); // 默认为0
+        // let now = Date.now();
+        // let seconds = Math.floor(now / 1e3);
+        // buf.writeUIntLE(seconds, 0, 8);
         // buf.writeUIntLE(1531889030648, 0, 8);
+        let now = Date.now();
+        let userId = Buffer.from(data).toString('utf-8');
+        let time = user.getUser(userId);
+        let buf = Buffer.allocUnsafeSlow(4).fill(0); // 默认为0
+        if(time > now){
+            buf.writeUInt32LE(1);
+        }
         socket.write(buf, (err) => {
             if(err){
                 logger.error(err);
