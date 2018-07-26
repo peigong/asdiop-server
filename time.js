@@ -28,7 +28,9 @@ server.on('connection', function(socket) {
         // socket.pause(); // 暂停接收data事件
         let bufData = Buffer.from(data);
         let userId = bufData.readUInt32LE();
+        logger.log(userId);
         let checked = user.getUser(userId);
+        logger.log(checked);
         let buf = Buffer.allocUnsafe(8); // 默认为0
         let now = Date.now();
         let seconds = Math.floor(now / 1e3);
