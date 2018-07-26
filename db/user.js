@@ -31,6 +31,9 @@ function save(userId, checked){
     if(!json){
         json = {};
     }
+    logger.log('========= db user ==========');
+    logger.log(json);
+    logger.log(userId);
     json[userId] = checked;
     flag = true;
 }
