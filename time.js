@@ -26,7 +26,8 @@ server.on('connection', function(socket) {
     });
     socket.on('data', (data) => {
         // socket.pause(); // 暂停接收data事件
-        let userId = data.readUIntLE();
+        let bufData = Buffer.from(data);
+        let userId = bufData.readUInt32LE();
         logger.log('========= data ==========');
         logger.log(userId);
         let checked = user.getUser(userId);
