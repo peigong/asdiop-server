@@ -28,11 +28,7 @@ server.on('connection', function(socket) {
         // socket.pause(); // 暂停接收data事件
         let bufData = Buffer.from(data);
         let userId = bufData.readUInt32LE();
-        logger.log('========= data ==========');
-        logger.log(userId);
         let checked = user.getUser(userId);
-        logger.log('========= checked ==========');
-        logger.log(checked);
         let buf = Buffer.allocUnsafe(8); // 默认为0
         let now = Date.now();
         let seconds = Math.floor(now / 1e3);
@@ -41,14 +37,6 @@ server.on('connection', function(socket) {
         }else{
             buf.writeUIntLE(1848138973, 0, 8);
         }
-        // let now = Date.now();
-        // let userId = Buffer.from(data).toString('utf-8');
-        // 1848138973
-        // let time = user.getUser(userId);
-        // let buf = Buffer.allocUnsafeSlow(4).fill(0); // 默认为0
-        // if(time > now){
-        //     buf.writeUInt32LE(1);
-        // }
         socket.write(buf, (err) => {
             if(err){
                 logger.error(err);
