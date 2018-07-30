@@ -39,6 +39,9 @@ function getUser(userId){
     if(!json){
         json = {};
     }
+    logger.log('db user getUser:');
+    logger.log(json);
+    logger.log(userId);
     return json[`${ userId }`] || 0;
 }
 
