@@ -2,7 +2,7 @@ const net = require('net');
 const path = require('path');
 
 const { host, port } = require('./config.json');
-const user = require('./db/user.js');
+const user = require('./db/user-readonly.js');
 
 const logger = console;
 const server = net.createServer({
