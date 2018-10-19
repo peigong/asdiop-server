@@ -16,7 +16,7 @@
 
 ## 服务器的部署
 
-- 从[https://nodejs.org/en/](https://nodejs.org/en/)下载安装Node.js。
+- 从[https://nodejs.org/en/download/releases/](https://nodejs.org/en/download/releases/)下载安装Node.js v8.11.x。
 - 从[https://gitforwindows.org/](https://gitforwindows.org/)下载安装git命令行工具。
 - 创建一个github目录，在此目录中`shift+右键菜单`，启动git 命令行。
 - 在命令行中运行`git clone https://github.com/peigong/asdiop-server.git`，拉取系统代码。
