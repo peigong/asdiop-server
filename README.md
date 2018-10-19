@@ -22,4 +22,5 @@
 - 在命令行中运行`git clone https://github.com/peigong/asdiop-server.git`，拉取系统代码。
 - 创建一个与github目录平级的目录`__data__`。如果有旧数据文件users.json，需要迁移至此目录。
 - 创建一个与github目录平级的目录`webapps`。
-- 进入`github/asdiop-server`目录，启动服务。
+- 进入`github/asdiop-server`目录，`shift+右键菜单`打开命令行，执行`npm install`命令安装项目依赖。
+- 在`github/asdiop-server`目录中，`shift+右键菜单`打开命令行，启动服务。
