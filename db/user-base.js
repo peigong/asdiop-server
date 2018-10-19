@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-let filename = path.join(__dirname, 'users.json');
+const filename = path.join(__dirname, '../../../__data__/users.json');
 
 function getJson(){
     return new Promise((resolve, reject) => {
