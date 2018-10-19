@@ -4,8 +4,8 @@
 
 ## 启动服务
 
-`node time.js`启动socket服务
-`node app.js`启动web服务
+- `node time.js`启动socket服务
+- `node app.js`启动web服务
 
 ## web管理
 
