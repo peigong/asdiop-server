@@ -7,6 +7,7 @@ let json = null;
 function getJson(){
     base.getJson()
     .then((data) => {
+        logger.log('readonly db user getJson');
         json = data;
     })
     .catch((err) => {

@@ -15,6 +15,7 @@ base.getJson()
 
 let timer = setInterval(() => {
     if(json && flag){
+        logger.log('user writeJson');
         base.writeJson(json)
         .then((data) => data)
         .catch((err) => {
