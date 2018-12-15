@@ -2,12 +2,20 @@
 
 > asdiop web & socket服务端
 
-## 启动服务
+## DownLoadServer服务 ##
+
+与github目录平级的目录`__data__`目录中放置文件名为`4`的文件（注意：没有后缀，没有后缀，没有后缀。去系统控制面板，文件夹选项里，把隐藏已知文件名后缀的选项去掉）。
+
+`node _server.js`启动分包下载服务。
+
+## NetLisence服务 ##
+
+### 启动服务 ###
 
 - `node time.js`启动socket服务
 - `node app.js`启动web服务
 
-## web管理
+### web管理 ###
 
 - 用户设为有效：`:8341/save?userId=414012720&checked=1`
 - 用户设为无效：`:8341/save?userId=414012720&checked=0`
